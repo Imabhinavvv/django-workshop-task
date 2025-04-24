@@ -124,8 +124,6 @@ def update_post(request,id):
 def delete_post(request,id):
 
     post=Post.objects.get(pk=id)
-    if request.user != post.author:
-        Post.delete(post)
-        return redirect('display-post')
-    else:
-        
+    Post.delete(post)
+    return redirect('display-post')
+    
