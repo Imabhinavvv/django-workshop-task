@@ -13,7 +13,7 @@
                 {% csrf_token %}
                 {{form.as_p}}
                 <br>
-                <button type="submit">Update Post</button>
+                <button class=" btn btn-info" type="submit">Update Post</button>
             </form>
             {% if error %}
                 <p>{{error}}</p>
