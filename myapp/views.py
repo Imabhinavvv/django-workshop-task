@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from .forms import UserRegistrationForm,PostForm
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
-
+from .models import Post
 # Create your views here.
 
 def home(request):
@@ -89,3 +89,14 @@ def create_post(request):
             context.update(error='Invalid Form Submission. Please Try Again')
             return render(request,'create-post.html',context)
 
+def display_post(request):
+    post_list= Post.objects.all() #select * from post
+    context = {'post_list':post_list}
+    return render(request,'display-post.html',context )
+
+def update_post(request,id):
+    post = Post.objects.get(pk=id) #get single post using ID
+    form = PostForm(instance=post)  #fill the form with post
+    context={'form':form}
+    if request.method=='GET':
+        return render(request, 'update-post.html', context)
