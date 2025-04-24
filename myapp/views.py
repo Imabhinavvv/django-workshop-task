@@ -3,6 +3,8 @@ from .forms import UserRegistrationForm,PostForm
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from .models import Post
+from django.http import HttpResponse
+from django.utils import timezone
 # Create your views here.
 
 def home(request):
@@ -95,8 +97,35 @@ def display_post(request):
     return render(request,'display-post.html',context )
 
 def update_post(request,id):
-    post = Post.objects.get(pk=id) #get single post using ID
+    try:
+        post = Post.objects.get(pk=id) #get single post using ID
+    except Post.DoesNotExist:
+        return HttpResponse('Post does not exist!')
+    if request.user != post.author:
+        return HttpResponse('You are not allowed to update this post!')
     form = PostForm(instance=post)  #fill the form with post
     context={'form':form}
+
     if request.method=='GET':
         return render(request, 'update-post.html', context)
+    if request.method=='POST':
+        form= PostForm(request.POST, instance=post)
+
+        if form.is_valid():
+
+            post=form.save(commit=False)
+            post.published_on=timezone.now()
+            form.save()
+
+            return redirect('display-post')
+        else:
+            context.update(error='Invalid form submission, try again!')
+            return render(request, 'update-post.html', context)
+def delete_post(request,id):
+
+    post=Post.objects.get(pk=id)
+    if request.user != post.author:
+        Post.delete(post)
+        return redirect('display-post')
+    else:
+        

@@ -32,5 +32,6 @@ urlpatterns = [
     path('reset/<uidb64>/<token>',auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
     path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(),name="password_reset_complete"),
     path('display-post',views.display_post,name='display-post'),
-    path('update-post/<int:id>', views.update_post, name= 'update-post')
+    path('update-post/<int:id>', views.update_post, name= 'update-post'),
+    path('delete-post/<int:id>', views.delete_post, name= 'delete-post')
 ]
